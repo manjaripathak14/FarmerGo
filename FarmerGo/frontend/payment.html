@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment - e-Kharid</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .payment-page {
+            width: 100%;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .payment-title {
+            text-align: center;
+            font-size: clamp(40px, 5vw, 58px);
+            font-weight: 800;
+            color: #18392b;
+            margin-bottom: 8px;
+        }
+
+        .payment-subtitle {
+            text-align: center;
+            color: #587064;
+            font-size: 16px;
+            margin-bottom: 30px;
+        }
+
+        .payment-summary {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .summary-card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid #dce9df;
+            box-shadow: 0 10px 28px rgba(35, 77, 60, 0.10);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .summary-card::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 5px;
+            height: 100%;
+            background: #6d633d;
+        }
+
+        .summary-card h3 {
+            color: #587064;
+            font-size: 14px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .summary-amount {
+            font-size: 27px;
+            font-weight: 800;
+            color: #234d3c;
+        }
+
+        .summary-description {
+            margin-top: 6px;
+            font-size: 12px;
+            color: #7b8c82;
+        }
+
+        .payment-section {
+            background: white;
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 25px;
+            border: 1px solid #dce9df;
+            box-shadow: 0 10px 30px rgba(35, 77, 60, 0.08);
+        }
+
+        .payment-section-title {
+            color: #234d3c;
+            font-size: 25px;
+            font-weight: 800;
+            margin-bottom: 25px;
+        }
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .payment-table {
+            width: 100%;
+            min-width: 750px;
+            border-collapse: collapse;
+        }
+
+        .payment-table thead {
+            background: #e8f4df;
+        }
+
+        .payment-table th {
+            padding: 14px 12px;
+            text-align: left;
+            color: #234d3c;
+            font-size: 13px;
+            font-weight: 800;
+            border-bottom: 1px solid #dce9df;
+        }
+
+        .payment-table td {
+            padding: 15px 12px;
+            color: #52635a;
+            font-size: 13px;
+            border-bottom: 1px solid #edf2ee;
+        }
+
+        .amount-cell {
+            font-weight: 800;
+            color: #234d3c !important;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 13px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .status-paid {
+            background: #e3f0e2;
+            color: #37653b;
+        }
+
+        .status-processing {
+            background: #fff2d8;
+            color: #9a6a13;
+        }
+
+        .payment-view-btn {
+            background: #6d633d;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 7px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .transaction-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.55);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            z-index: 1000;
+        }
+
+        .transaction-modal.show {
+            display: flex;
+        }
+
+        .transaction-box {
+            width: 100%;
+            max-width: 600px;
+            background: white;
+            border-radius: 18px;
+            padding: 30px;
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 12px;
+            right: 18px;
+            border: none;
+            background: transparent;
+            font-size: 30px;
+            cursor: pointer;
+        }
+
+        .modal-details {
+            background: #f8fbf7;
+            border: 1px solid #dce9df;
+            border-radius: 10px;
+            padding: 8px 16px;
+        }
+
+        .modal-detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e1e9e3;
+            font-size: 13px;
+        }
+
+        .download-receipt {
+            width: 100%;
+            margin-top: 20px;
+            padding: 13px;
+            background: #08d8ff;
+            color: #111;
+            border: none;
+            border-radius: 8px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="website">
+        <aside class="sidebar">
+            <div class="sidebar-menu">
+                <button class="menu-item" onclick="window.location.href='index.html'">Dashboard</button>
+                <button class="menu-item active">Payment</button>
+                <button class="menu-item" onclick="window.location.href='gatepass.html'">Gate Pass</button>
+                <button class="menu-item" onclick="window.location.href='profile.html'">Profile</button>
+                <button class="menu-item" onclick="window.location.href='official.html'">Official Portal</button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="payment-page">
+                <h1 class="payment-title">Payment</h1>
+                <p class="payment-subtitle">Track your procurement payments and transaction history</p>
+
+                <div class="payment-summary">
+                    <div class="summary-card">
+                        <h3>Total Amount</h3>
+                        <div class="summary-amount" id="totalAmount">₹0</div>
+                        <div class="summary-description">Total procurement value</div>
+                    </div>
+                    <div class="summary-card">
+                        <h3>Total Quantity</h3>
+                        <div class="summary-amount" id="totalQuantity">0 kg</div>
+                        <div class="summary-description">Total crop sold</div>
+                    </div>
+                    <div class="summary-card">
+                        <h3>Pending Payment</h3>
+                        <div class="summary-amount" id="pendingAmount">₹0</div>
+                        <div class="summary-description">Payment under processing</div>
+                    </div>
+                </div>
+
+                <section class="payment-section">
+                    <h2 class="payment-section-title">Payment History</h2>
+                    <div class="table-wrapper">
+                        <table class="payment-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Gate Pass</th>
+                                    <th>Crop</th>
+                                    <th>Quantity</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="paymentTableBody">
+                                <!-- Dynamic Loading -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- TRANSACTION MODAL -->
+    <div class="transaction-modal" id="transactionModal">
+        <div class="transaction-box">
+            <button class="close-modal" onclick="closeTransaction()">&times;</button>
+            <h2>Transaction Details</h2>
+            <div class="modal-details">
+                <div class="modal-detail-row"><span>Farmer Name</span><span id="modalFarmer">-</span></div>
+                <div class="modal-detail-row"><span>Gate Pass</span><span id="modalGatePass">-</span></div>
+                <div class="modal-detail-row"><span>Crop</span><span id="modalCrop">-</span></div>
+                <div class="modal-detail-row"><span>Quantity</span><span id="modalQuantity">-</span></div>
+                <div class="modal-detail-row"><span>Final Amount</span><span id="modalFinalAmount">-</span></div>
+            </div>
+            <button class="download-receipt" onclick="downloadReceipt()">↓ Download Transaction Receipt</button>
+        </div>
+    </div>
+
+    <script src="js/script.js"></script>
+    <script>
+        let paymentsData = [];
+        let currentTransaction = null;
+
+        async function fetchPaymentDetails() {
+            const farmerId = getFarmerId();
+            const tbody = document.getElementById("paymentTableBody");
+            if (!farmerId) {
+                tbody.innerHTML = '<tr><td colspan="7">Please login as a farmer first.</td></tr>';
+                return;
+            }
+            try {
+                const history = await apiGet(`/payment/history/${farmerId}`);
+                paymentsData = [];
+                for (const p of history) {
+                    let gate = {};
+                    try { gate = await apiGet(`/gate-pass/${p.gate_pass_id}`); } catch (_) {}
+                    paymentsData.push({
+                        ...p,
+                        date: p.payment_date,
+                        crop_name: gate.crop_name || "-",
+                        quantity: gate.estimated_weight || 0,
+                        farmer_name: getUserName()
+                    });
+                }
+                renderPayments();
+            } catch (err) {
+                console.error(err);
+                tbody.innerHTML = `<tr><td colspan="7">${err.message}</td></tr>`;
+            }
+        }
+
+        function renderPayments() {
+            const tbody = document.getElementById("paymentTableBody");
+            tbody.innerHTML = "";
+            let totalAmt=0,totalQty=0,pendingAmt=0;
+            paymentsData.forEach((txn,idx)=>{
+                totalAmt += Number(txn.amount||0);
+                totalQty += Number(txn.quantity||0);
+                if ((txn.status||'').toUpperCase() !== 'PAID') pendingAmt += Number(txn.amount||0);
+                const tr=document.createElement('tr');
+                tr.innerHTML=`<td>${txn.date||'N/A'}</td><td>${txn.gate_pass_id}</td><td>${txn.crop_name}</td><td>${txn.quantity} Quintals</td><td class="amount-cell">₹${Number(txn.amount||0).toLocaleString('en-IN')}</td><td><span class="status-badge ${String(txn.status).toUpperCase()==='PAID'?'status-paid':'status-processing'}">${txn.status}</span></td><td><button class="payment-view-btn" onclick="viewTransaction(${idx})">View</button></td>`;
+                tbody.appendChild(tr);
+            });
+            document.getElementById('totalAmount').textContent=`₹${totalAmt.toLocaleString('en-IN')}`;
+            document.getElementById('totalQuantity').textContent=`${totalQty.toLocaleString('en-IN')} Quintals`;
+            document.getElementById('pendingAmount').textContent=`₹${pendingAmt.toLocaleString('en-IN')}`;
+        }
+
+        function viewTransaction(index){
+            currentTransaction=paymentsData[index];
+            document.getElementById('modalFarmer').textContent=currentTransaction.farmer_name||getUserName();
+            document.getElementById('modalGatePass').textContent=currentTransaction.gate_pass_id;
+            document.getElementById('modalCrop').textContent=currentTransaction.crop_name;
+            document.getElementById('modalQuantity').textContent=currentTransaction.quantity+' Quintals';
+            document.getElementById('modalFinalAmount').textContent='₹'+Number(currentTransaction.amount||0).toLocaleString('en-IN');
+            document.getElementById('transactionModal').classList.add('show');
+        }
+
+        function closeTransaction(){document.getElementById('transactionModal').classList.remove('show');}
+
+        function downloadReceipt(){
+            if(!currentTransaction)return;
+            const content=`e-KHARID RECEIPT\nFarmer: ${currentTransaction.farmer_name}\nGate Pass: ${currentTransaction.gate_pass_id}\nCrop: ${currentTransaction.crop_name}\nQuantity: ${currentTransaction.quantity} Quintals\nAmount: ₹${currentTransaction.amount}\nDate: ${currentTransaction.date}\nTransaction ID: ${currentTransaction.transaction_id}\nStatus: ${currentTransaction.status}`;
+            const blob=new Blob([content],{type:'text/plain'});
+            const link=document.createElement('a');
+            link.href=URL.createObjectURL(blob);
+            link.download=`Receipt_${currentTransaction.gate_pass_id}.txt`;
+            link.click();
+        }
+
+        document.addEventListener('DOMContentLoaded',fetchPaymentDetails);
+    </script>
+</body>
+
+</html>
