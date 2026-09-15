@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>QR Scanner - e-Kharid</title>
+
+    <link rel="stylesheet"
+        href="css/style.css">
+
+
+    <style>
+
+        /* =====================================
+           SCANNER PAGE
+        ===================================== */
+
+        .scanner-content {
+
+            width: 100%;
+            max-width: 850px;
+
+            margin: 0 auto;
+
+        }
+
+
+        .scanner-title {
+
+            text-align: center;
+
+            font-size: 52px;
+
+            font-weight: 800;
+
+            color: #234d3c;
+
+            margin-bottom: 8px;
+
+        }
+
+
+        .scanner-subtitle {
+
+            text-align: center;
+
+            color: #65776d;
+
+            font-size: 15px;
+
+            margin-bottom: 30px;
+
+        }
+
+
+        /* =====================================
+           SCANNER CARD
+        ===================================== */
+
+        .scanner-card {
+
+            background: white;
+
+            border-radius: 18px;
+
+            padding: 30px;
+
+            border: 1px solid #dce9df;
+
+            box-shadow:
+                0 12px 30px
+                rgba(35, 77, 60, 0.09);
+
+            margin-bottom: 25px;
+
+        }
+
+
+        .scanner-card h2 {
+
+            color: #234d3c;
+
+            font-size: 24px;
+
+            font-weight: 800;
+
+            margin-bottom: 8px;
+
+        }
+
+
+        .scanner-card p {
+
+            color: #718078;
+
+            font-size: 13px;
+
+            margin-bottom: 20px;
+
+        }
+
+
+        /* =====================================
+           QR READER
+        ===================================== */
+
+        #reader {
+
+            width: 100%;
+
+            max-width: 520px;
+
+            margin: 0 auto;
+
+            border: 2px dashed #b8cdbd;
+
+            border-radius: 15px;
+
+            padding: 15px;
+
+            background: #f5faf3;
+
+        }
+
+
+        /* =====================================
+           MESSAGE
+        ===================================== */
+
+        #scan-message {
+
+            margin-bottom: 20px;
+
+        }
+
+
+        .scan-success {
+
+            background: #e3f0e2;
+
+            color: #37653b;
+
+            border-left: 5px solid #6d633d;
+
+            padding: 14px 18px;
+
+            border-radius: 10px;
+
+            font-size: 13px;
+
+            font-weight: 700;
+
+        }
+
+
+        .scan-error {
+
+            background: #fff0ed;
+
+            color: #9a4535;
+
+            border-left: 5px solid #a95b4b;
+
+            padding: 14px 18px;
+
+            border-radius: 10px;
+
+            font-size: 13px;
+
+            font-weight: 700;
+
+        }
+
+
+        /* =====================================
+           MANUAL ENTRY
+        ===================================== */
+
+        .manual-title {
+
+            color: #234d3c;
+
+            font-size: 20px;
+
+            font-weight: 800;
+
+            margin-bottom: 15px;
+
+        }
+
+
+        .manual-label {
+
+            display: block;
+
+            color: #52635a;
+
+            font-size: 13px;
+
+            font-weight: 700;
+
+            margin-bottom: 7px;
+
+        }
+
+
+        .manual-input {
+
+            width: 100%;
+
+            padding: 13px 15px;
+
+            border: 1px solid #cbdacf;
+
+            border-radius: 9px;
+
+            outline: none;
+
+            font-size: 14px;
+
+            color: #234d3c;
+
+            background: #fbfdfb;
+
+            box-sizing: border-box;
+
+        }
+
+
+        .manual-input:focus {
+
+            border-color: #6d633d;
+
+            box-shadow:
+                0 0 0 3px #edf2e8;
+
+        }
+
+
+        .scan-btn {
+
+            margin-top: 12px;
+
+            width: 100%;
+
+            padding: 13px;
+
+            border: none;
+
+            border-radius: 9px;
+
+            background: #6d633d;
+
+            color: white;
+
+            font-size: 14px;
+
+            font-weight: 800;
+
+            cursor: pointer;
+
+            transition: 0.2s ease;
+
+        }
+
+
+        .scan-btn:hover {
+
+            background: #554c2d;
+
+            transform: translateY(-2px);
+
+        }
+
+
+        /* =====================================
+           FLOW
+        ===================================== */
+
+        .scan-flow {
+
+            margin-top: 20px;
+
+            padding: 18px;
+
+            background: #e8f4df;
+
+            border-radius: 12px;
+
+            border-left: 5px solid #6d633d;
+
+        }
+
+
+        .scan-flow-title {
+
+            color: #234d3c;
+
+            font-size: 13px;
+
+            font-weight: 800;
+
+            margin-bottom: 8px;
+
+        }
+
+
+        .scan-flow-text {
+
+            color: #65776d;
+
+            font-size: 12px;
+
+            line-height: 1.8;
+
+        }
+
+
+        /* =====================================
+           RESPONSIVE
+        ===================================== */
+
+        @media (max-width: 700px) {
+
+            .scanner-title {
+
+                font-size: 38px;
+
+            }
+
+            .scanner-card {
+
+                padding: 20px;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="website">
+
+
+    <!-- =====================================
+         SIDEBAR
+    ====================================== -->
+
+    <aside class="sidebar">
+
+
+        <div class="sidebar-menu">
+
+
+            <!-- DASHBOARD -->
+
+            <button
+                class="menu-item"
+                onclick="window.location.href='official.html'">
+
+                Dashboard
+
+            </button>
+
+
+            <!-- SCANNER -->
+
+            <button
+                class="menu-item active">
+
+                QR Scanner
+
+            </button>
+
+
+            <!-- LIVE QUEUE -->
+
+            <button
+                class="menu-item"
+                onclick="window.location.href='queue.html'">
+
+                Live Queue
+
+            </button>
+
+
+            <!-- PAYMENT -->
+
+            <button
+                class="menu-item"
+                onclick="window.location.href='payment.html'">
+
+                Payment
+
+            </button>
+
+
+            <!-- GATE PASS -->
+
+            <button
+                class="menu-item"
+                onclick="window.location.href='gatepass.html'">
+
+                Gate Pass
+
+            </button>
+
+
+            <!-- PROFILE -->
+
+            <button
+                class="menu-item"
+                onclick="window.location.href='profile.html'">
+
+                Profile
+
+            </button>
+
+
+            <!-- CONTACT -->
+
+            <button
+                class="menu-item"
+                onclick="window.location.href='contact.html'">
+
+                Contact Us
+
+            </button>
+
+
+        </div>
+
+
+    </aside>
+
+
+
+    <!-- =====================================
+         MAIN CONTENT
+    ====================================== -->
+
+    <main class="main-content">
+
+
+        <div class="scanner-content">
+
+
+            <!-- HEADER -->
+
+            <h1 class="scanner-title">
+
+                QR Scanner
+
+            </h1>
+
+
+            <p class="scanner-subtitle">
+
+                Scan a farmer's Gate Pass QR code
+                to update their mandi processing stage.
+
+            </p>
+
+
+
+            <!-- =================================
+                 QR SCANNER
+            ================================== -->
+
+            <div class="scanner-card">
+
+
+                <h2>
+
+                    Scan Gate Pass QR
+
+                </h2>
+
+
+                <p>
+
+                    Use the camera to scan the QR
+                    code present on the farmer's Gate Pass.
+
+                </p>
+
+
+                <div id="reader"></div>
+
+
+            </div>
+
+
+
+            <!-- MESSAGE -->
+
+            <div id="scan-message"></div>
+
+
+
+            <!-- =================================
+                 MANUAL ENTRY
+            ================================== -->
+
+            <div class="scanner-card">
+
+
+                <h2 class="manual-title">
+
+                    Or Enter Gate Pass ID Manually
+
+                </h2>
+
+
+                <label
+                    class="manual-label"
+                    for="manual-id">
+
+                    Gate Pass ID
+
+                </label>
+
+
+                <input
+                    id="manual-id"
+                    class="manual-input"
+                    type="text"
+                    placeholder="e.g. GP-2026-0001">
+
+
+                <button
+                    class="scan-btn"
+                    onclick="submitManualScan()">
+
+                    Submit Gate Pass
+
+                </button>
+
+
+                <!-- PROCESS FLOW -->
+
+                <div class="scan-flow">
+
+                    <div class="scan-flow-title">
+
+                        Processing Flow
+
+                    </div>
+
+
+                    <div class="scan-flow-text">
+
+                        Gate Pass
+                        →
+                        Arrived
+                        →
+                        Quality
+                        →
+                        Weight
+                        →
+                        Storage
+                        →
+                        Payment
+                        →
+                        Completed
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+    </main>
+
+
+</div>
+
+
+
+<!-- =====================================
+     QR SCANNER LIBRARY
+====================================== -->
+
+<script
+    src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js">
+</script>
+
+
+<!-- SHARED SCRIPT -->
+
+<script src="js/script.js"></script>
+
+
+<!-- =====================================
+     SCANNER SCRIPT
+====================================== -->
+
+<script src="js/scanner.js"></script>
+
+
+
+
+
+</body>
+
+</html>
