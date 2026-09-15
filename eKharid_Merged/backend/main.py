@@ -329,6 +329,7 @@ def payment_history(farmer_id: str):
 # Serve css/ and js/ as static asset folders.
 app.mount("/css", StaticFiles(directory=os.path.join(FRONTEND_DIR, "css")), name="css")
 app.mount("/js", StaticFiles(directory=os.path.join(FRONTEND_DIR, "js")), name="js")
+app.mount("/images", StaticFiles(directory=FRONTEND_DIR), name="images")
 
 
 @app.get("/")
