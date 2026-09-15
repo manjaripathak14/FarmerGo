@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Live Queue - e-Kharid</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+
+        /* ================================
+           LIVE QUEUE PAGE
+        ================================= */
+
+        .queue-content {
+            width: 100%;
+            max-width: 1050px;
+            margin: 0 auto;
+        }
+
+        .queue-title {
+            text-align: center;
+            font-size: 52px;
+            font-weight: 800;
+            color: #234d3c;
+            margin-bottom: 8px;
+        }
+
+        .queue-subtitle {
+            text-align: center;
+            color: #65776d;
+            font-size: 15px;
+            margin-bottom: 30px;
+        }
+
+        /* ================================
+           MAIN QUEUE CARD
+        ================================= */
+
+        .queue-card {
+            background: white;
+            border-radius: 18px;
+            padding: 30px;
+
+            border: 1px solid #dce9df;
+
+            box-shadow:
+                0 12px 30px rgba(35, 77, 60, 0.09);
+
+            margin-bottom: 25px;
+        }
+
+        .queue-card-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: #234d3c;
+            margin-bottom: 20px;
+        }
+
+        /* ================================
+           INFORMATION ROWS
+        ================================= */
+
+        .queue-info {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .queue-field {
+            background: #f3f8f0;
+            border: 1px solid #dce9df;
+            border-radius: 12px;
+
+            padding: 18px;
+
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .field-label {
+            font-size: 12px;
+            color: #718078;
+            font-weight: 700;
+        }
+
+        .field-value {
+            font-size: 19px;
+            color: #234d3c;
+            font-weight: 800;
+        }
+
+        .gate-pass-id {
+            color: #6d633d;
+        }
+
+        /* ================================
+           STAGE
+        ================================= */
+
+        .stage-box {
+            margin-top: 20px;
+
+            background: #e8f4df;
+            border-radius: 12px;
+
+            padding: 18px;
+
+            border-left: 5px solid #6d633d;
+        }
+
+        .stage-label {
+            color: #65776d;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .stage-value {
+            margin-top: 5px;
+
+            color: #234d3c;
+
+            font-size: 21px;
+            font-weight: 800;
+        }
+
+        /* ================================
+           PROGRESS
+        ================================= */
+
+        .progress-card {
+            background: white;
+            border-radius: 18px;
+
+            padding: 30px;
+
+            border: 1px solid #dce9df;
+
+            box-shadow:
+                0 12px 30px rgba(35, 77, 60, 0.09);
+
+            margin-bottom: 25px;
+        }
+
+        .progress-card h3 {
+            color: #234d3c;
+            font-size: 24px;
+            margin-bottom: 25px;
+        }
+
+        .progress-track {
+            display: flex;
+            justify-content: space-between;
+
+            position: relative;
+
+            padding: 0 5px;
+        }
+
+        .progress-track::before {
+            content: "";
+
+            position: absolute;
+
+            top: 20px;
+            left: 5%;
+            right: 5%;
+
+            height: 4px;
+
+            background: #dce7df;
+
+            z-index: 0;
+
+            border-radius: 10px;
+        }
+
+        .progress-stage {
+            position: relative;
+            z-index: 1;
+
+            text-align: center;
+
+            width: 16%;
+        }
+
+        .progress-circle {
+            width: 40px;
+            height: 40px;
+
+            margin: 0 auto 9px;
+
+            border-radius: 50%;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: #edf2ed;
+
+            border: 3px solid #dce7df;
+
+            color: #7b8a82;
+
+            font-size: 14px;
+            font-weight: 800;
+        }
+
+        .progress-stage.completed .progress-circle {
+            background: #6d633d;
+            border-color: #6d633d;
+            color: white;
+        }
+
+        .progress-stage.current .progress-circle {
+            background: white;
+            border-color: #234d3c;
+            color: #234d3c;
+
+            box-shadow:
+                0 0 0 5px #e8f4df;
+        }
+
+        .progress-name {
+            font-size: 11px;
+            font-weight: 700;
+            color: #66766d;
+        }
+
+        .progress-stage.completed .progress-name,
+        .progress-stage.current .progress-name {
+            color: #234d3c;
+        }
+
+        /* ================================
+           REFRESH BUTTON
+        ================================= */
+
+        .refresh-btn {
+            display: block;
+
+            margin: 10px auto 0;
+
+            border: none;
+
+            background: #6d633d;
+            color: white;
+
+            padding: 13px 25px;
+
+            border-radius: 9px;
+
+            font-size: 14px;
+            font-weight: 800;
+
+            cursor: pointer;
+
+            transition: 0.2s ease;
+        }
+
+        .refresh-btn:hover {
+            background: #554c2d;
+            transform: translateY(-2px);
+        }
+
+        /* ================================
+           MESSAGE
+        ================================= */
+
+        #queue-message {
+            margin-bottom: 20px;
+        }
+
+        .queue-message-box {
+            padding: 14px 18px;
+
+            border-radius: 10px;
+
+            background: #fff3d8;
+
+            color: #8a671e;
+
+            font-size: 13px;
+
+            font-weight: 700;
+
+            text-align: center;
+        }
+
+        /* ================================
+           RESPONSIVE
+        ================================= */
+
+        @media (max-width: 750px) {
+
+            .queue-title {
+                font-size: 38px;
+            }
+
+            .queue-info {
+                grid-template-columns: 1fr;
+            }
+
+            .progress-track {
+                overflow-x: auto;
+                gap: 25px;
+                padding-bottom: 10px;
+            }
+
+            .progress-stage {
+                min-width: 90px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="website">
+
+
+    <!-- =====================================
+         SIDEBAR
+    ====================================== -->
+
+    <aside class="sidebar">
+
+        <div class="sidebar-menu">
+
+
+            <!-- DASHBOARD -->
+
+            <button
+                class="menu-item"
+                onclick="window.location.href='index.html'">
+
+                Dashboard
+
+            </button>
+
+
+            <!-- LIVE QUEUE -->
+
+            <button
+                class="menu-item active">
+
+                Live Queue
+
+            </button>
+
+
+            <!-- PAYMENT -->
+
+            <button
+                class="menu-item"
+                onclick="window.location.href='payment.html'">
+
+                Payment
+
+            </button>
+
+
+            <!-- GATE PASS -->
+
+            <button
+                class="menu-item"
+                onclick="window.location.href='gatepass.html'">
+
+                Gate Pass
+
+            </button>
+
+
+            <!-- PROFILE -->
+
+            <button
+                class="menu-item"
+                onclick="window.location.href='profile.html'">
+
+                Profile
+
+            </button>
+
+
+            <!-- CONTACT -->
+
+            <button
+                class="menu-item"
+                onclick="window.location.href='contact.html'">
+
+                Contact Us
+
+            </button>
+
+
+        </div>
+
+    </aside>
+
+
+
+    <!-- =====================================
+         MAIN CONTENT
+    ====================================== -->
+
+    <main class="main-content">
+
+
+        <div class="queue-content">
+
+
+            <h1 class="queue-title">
+                Live Queue
+            </h1>
+
+
+            <p class="queue-subtitle">
+                Track your position and current mandi processing stage
+            </p>
+
+
+
+            <!-- MESSAGE -->
+
+            <div id="queue-message"></div>
+
+
+
+            <!-- =================================
+                 QUEUE INFORMATION
+            ================================== -->
+
+            <div
+                class="queue-card"
+                id="queue-card">
+
+
+                <h2 class="queue-card-title">
+                    Your Queue Status
+                </h2>
+
+
+                <div class="queue-info">
+
+
+                    <!-- GATE PASS -->
+
+                    <div class="queue-field">
+
+                        <span class="field-label">
+                            Your Gate Pass
+                        </span>
+
+                        <span
+                            class="field-value gate-pass-id"
+                            id="q-gate-pass-id">
+
+                            GP-2026-0001
+
+                        </span>
+
+                    </div>
+
+
+
+                    <!-- FARMERS AHEAD -->
+
+                    <div class="queue-field">
+
+                        <span class="field-label">
+                            Farmers Ahead
+                        </span>
+
+                        <span
+                            class="field-value"
+                            id="q-ahead">
+
+                            7
+
+                        </span>
+
+                    </div>
+
+
+
+                    <!-- FARMERS WAITING -->
+
+                    <div class="queue-field">
+
+                        <span class="field-label">
+                            Farmers Waiting
+                        </span>
+
+                        <span
+                            class="field-value"
+                            id="q-waiting">
+
+                            15
+
+                        </span>
+
+                    </div>
+
+
+
+                    <!-- QUEUE POSITION -->
+
+                    <div class="queue-field">
+
+                        <span class="field-label">
+                            Queue Position
+                        </span>
+
+                        <span
+                            class="field-value"
+                            id="q-position">
+
+                            8
+
+                        </span>
+
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- CURRENT STAGE -->
+
+                <div class="stage-box">
+
+                    <div class="stage-label">
+                        Current Stage
+                    </div>
+
+                    <div
+                        class="stage-value"
+                        id="q-stage">
+
+                        Arrived
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- =================================
+                 PROGRESS
+            ================================== -->
+
+            <div
+                class="progress-card"
+                id="progress-card">
+
+
+                <h3>
+                    Progress
+                </h3>
+
+
+                <div
+                    class="progress-track"
+                    id="progress-track">
+
+
+                    <!-- GATE PASS -->
+
+                    <div class="progress-stage completed">
+
+                        <div class="progress-circle">
+                            ✓
+                        </div>
+
+                        <div class="progress-name">
+                            Gate Pass
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- ARRIVED -->
+
+                    <div class="progress-stage current">
+
+                        <div class="progress-circle">
+                            2
+                        </div>
+
+                        <div class="progress-name">
+                            Arrived
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- QUALITY -->
+
+                    <div class="progress-stage">
+
+                        <div class="progress-circle">
+                            3
+                        </div>
+
+                        <div class="progress-name">
+                            Quality
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- WEIGHT -->
+
+                    <div class="progress-stage">
+
+                        <div class="progress-circle">
+                            4
+                        </div>
+
+                        <div class="progress-name">
+                            Weight
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- STORAGE -->
+
+                    <div class="progress-stage">
+
+                        <div class="progress-circle">
+                            5
+                        </div>
+
+                        <div class="progress-name">
+                            Storage
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- PAYMENT -->
+
+                    <div class="progress-stage">
+
+                        <div class="progress-circle">
+                            6
+                        </div>
+
+                        <div class="progress-name">
+                            Payment
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- =================================
+                 REFRESH
+            ================================== -->
+
+            <button
+                class="refresh-btn"
+                onclick="loadQueue()">
+
+                🔄 Refresh Now
+
+            </button>
+
+
+        </div>
+
+
+    </main>
+
+
+</div>
+
+
+
+<!-- =====================================
+     SHARED SCRIPT
+====================================== -->
+
+<script src="js/script.js"></script>
+<script src="js/queue.js"></script>
+</body>
+
+</html>
